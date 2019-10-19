@@ -112,6 +112,7 @@ def draw_lines(img, lines, color=[0,255,255], thickness=3):
  
         return [l1_x1, l1_y1, l1_x2, l1_y2], [l2_x1, l2_y1, l2_x2, l2_y2]
  
+
     except Exception as e:
         print('1 : ' + str(e))
         pass
