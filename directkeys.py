@@ -2,12 +2,12 @@ import ctypes
 import time
  
 SendInput = ctypes.windll.user32.SendInput
- 
+
 W=0x11
 A=0x1E
 S=0x1F
 D=0x20
- 
+
 # C struct redefinitions
 PUL = ctypes.POINTER(ctypes.c_ulong)
  

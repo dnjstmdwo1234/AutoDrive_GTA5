@@ -26,9 +26,9 @@ def process_img_1(image):
     
     # convert to gray
  
-    blue_threshold = 120
-    green_threshold = 120
-    red_threshold = 120
+    blue_threshold = 160
+    green_threshold = 160
+    red_threshold = 160
     bgr_threshold = [blue_threshold, green_threshold, red_threshold]
     thresholds = (image[:,:,0] > bgr_threshold[0]) \
                 | (image[:,:,1] > bgr_threshold[1]) \
@@ -50,7 +50,7 @@ def process_img_1(image):
     #processed_img = cv2.GaussianBlur(processed_img, (5,5), 0)
  
     # 원하는 영역을
-    vertices =  np.array([[100,400], [100,300], [300,250],[500,250], [700,300], [700,400]], np.int32)
+    vertices =  np.array([[100,500], [100,200], [300,100],[500,100], [700,200], [700,500]], np.int32)
 
     
     # roi()를 사용해 그 영역만큼 영상을 자릅니다
@@ -67,13 +67,13 @@ def process_img_2(image):
     
     # convert to gray
  
-    blue_threshold = 120
-    green_threshold = 120
-    red_threshold = 120
+    blue_threshold = 160
+    green_threshold = 160
+    red_threshold = 160
     bgr_threshold = [blue_threshold, green_threshold, red_threshold]
     thresholds = (image[:,:,0] > bgr_threshold[0]) \
-                | (image[:,:,1] > bgr_threshold[1]) \
-                | (image[:,:,2] > bgr_threshold[2])
+                & (image[:,:,1] > bgr_threshold[1]) \
+                & (image[:,:,2] > bgr_threshold[2])
     mark[thresholds] = [255,255,255]
     processed_img = cv2.cvtColor(mark, cv2.COLOR_BGR2GRAY)
     
@@ -82,8 +82,8 @@ def process_img_2(image):
     red_threshold = 50
     bgr_threshold = [blue_threshold, green_threshold, red_threshold]
     thresholds = (image[:,:,0] < bgr_threshold[0]) \
-                | (image[:,:,1] < bgr_threshold[1]) \
-                | (image[:,:,2] < bgr_threshold[2])
+                & (image[:,:,1] < bgr_threshold[1]) \
+                & (image[:,:,2] < bgr_threshold[2])
     mark[thresholds] = [255,255,255]
     processed_img = cv2.cvtColor(mark, cv2.COLOR_BGR2GRAY)
     # edge detection
@@ -113,50 +113,59 @@ def compare_1_2_3(image1_color,image2_color,image3_color):
     
     
     if(image1_color < image2_color):
-        if(image1_color < image3_color):
-            print("직진")
+        if(image1_color > image3_color):
             return 1
         else:
-            print("우회전")
             return 3
     else:
         if(image2_color < image3_color):
-            print("좌회전")
-            return 2
+            
+            return 3
         else:
-            print("우회전")
-            return 3   
+            
+            return 2   
 
 def control_car(num):
     if(num==1):
         PressKey(W)
-        time.sleep(3)
+        time.sleep(2)
         ReleaseKey(W)
-        
+        print("직진")
         
     elif(num==2):
         PressKey(A)
         PressKey(W)
         time.sleep(1)
+        PressKey(W)
+        time.sleep(1)
         ReleaseKey(A)
         ReleaseKey(W)
-        
+        print("좌회전")
         
 
     elif(num==3):
         PressKey(D)
         PressKey(W)
         time.sleep(1)
+        PressKey(W)
+        time.sleep(1)
         ReleaseKey(D)
         ReleaseKey(W)
+        print("우회전")
         
         
     else:
         PressKey(S)
         time.sleep(3)
+        ReleaseKey(S)
+        PressKey(W)
+        ReleaseKey(W)
+        time.sleep(2)
         
+        print("후진")
 
-       
+    
+num = 0
 while(True):
     # (0,40)부터 (800,600)좌표까지 창을 만들어서 데이터를 저장하고 screen 변수에 저장합니다
     image = np.array(ImageGrab.grab(bbox=(0,40,800,600)))
@@ -164,30 +173,26 @@ while(True):
     
     new_screen, original_image = process_img_1(image)
     
-    image1 = np.array(ImageGrab.grab(bbox=(300,275,500,325)))
+    image1 = np.array(ImageGrab.grab(bbox=(300,300,500,350)))
     mark = np.copy(image1) # image 복사
     
     new_screen1, original_image1 = process_img_2(image1)
     
 
-    image2 = np.array(ImageGrab.grab(bbox=(200,275,300,300)))
+    image2 = np.array(ImageGrab.grab(bbox=(200,300,300,350)))
     mark = np.copy(image2) # image 복사
     
     new_screen2, original_image2 = process_img_2(image2)
     
-    image3 = np.array(ImageGrab.grab(bbox=(500,275,600,300)))
+    image3 = np.array(ImageGrab.grab(bbox=(500,300,600,350)))
     mark = np.copy(image3) # image 복사
 
     new_screen3, original_image3 = process_img_2(image3)
 
-   
+
     image1_color = image_avg_color(new_screen1)
     image2_color = image_avg_color(new_screen2)
     image3_color = image_avg_color(new_screen3)
-        
-    control_num = compare_1_2_3(image1_color,image2_color,image3_color)
-    
-    control_car(control_num)
     
     
     cv2.imshow('main', new_screen)

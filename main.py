@@ -4,9 +4,9 @@ from sklearn.cluster import KMeans
 from directkeys import PressKey, ReleaseKey, W,A,S,D
 import cv2
 import time
-import road_detection
+from road_detection import control_car, process_img_1, process_img_2, image_avg_color, compare_1_2_3, control_car
 
-
+num = 0
 while(True):
     # (0,40)부터 (800,600)좌표까지 창을 만들어서 데이터를 저장하고 screen 변수에 저장합니다
     image = np.array(ImageGrab.grab(bbox=(0,40,800,600)))
@@ -30,14 +30,39 @@ while(True):
 
     new_screen3, original_image3 = process_img_2(image3)
 
-   
+
     image1_color = image_avg_color(new_screen1)
     image2_color = image_avg_color(new_screen2)
     image3_color = image_avg_color(new_screen3)
-        
-    control_num = compare_1_2_3(image1_color,image2_color,image3_color)
     
-    control_car(control_num)
+    if(num==0):
+        count = 0
+        control_num = compare_1_2_3(image1_color,image2_color,image3_color)
+        control_car(control_num)
+        control_last_num = control_num
+        print(control_last_num)
+        print(control_num)
+        num += 1
+    else:
+        control_num = compare_1_2_3(image1_color,image2_color,image3_color)
+        print(control_last_num)
+        print(control_num)
+        if(control_num == control_last_num):
+            count += 1
+            print(count)
+        else:
+            count = 0
+        if(count==3):
+            control_car(4)
+        else:
+            control_car(control_num)
+        control_last_num = control_num
+        
+    
+            
+    
+    
+    
     
     
     cv2.imshow('main', new_screen)
