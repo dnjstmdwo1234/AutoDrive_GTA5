@@ -9,11 +9,12 @@
 <br>
 </p>
 <h3>1. Detection</h3>
-<h4>(1) Lane detection using OpenCv(fail) -> Road detection using OpenCv</h4> 
+<h4>(1) Road detection using OpenCv</h4> 
 <h5> <1> ROI Settings </h5>
 <h5> <2> Change RGB to grayscale </h5>
 <h5> <3> Set the RGB range of the road and treat it all white if it is not within the range </h5>
-<h4>(2) Human and other Object recognition Using Tensorflow Object Detection API</h4>
+<h4>(2) Car recognition Using Tensorflow Object Detection API</h4>
+  <h5> <1> Find the most representative car detected through object detection. </h5> 
 <br>
 <h3>2. Control</h3>
 <h4>(1) Control Algorithm after Road Detection </h4>
