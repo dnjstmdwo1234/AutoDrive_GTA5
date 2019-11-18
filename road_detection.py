@@ -23,7 +23,7 @@ def roi(img, vertices):
 # 이미지에 각종 영상처리를 하는 함수
 def process_img_1(image):
     original_image = image
-    
+    processed_img = image
     # convert to gray
  
     blue_threshold = 160
@@ -48,7 +48,7 @@ def process_img_1(image):
     # edge detection
     #processed_img = cv2.Canny(processed_img, threshold1=200, threshold2=300)
     #processed_img = cv2.GaussianBlur(processed_img, (5,5), 0)
- 
+
     # 원하는 영역을
     vertices =  np.array([[100,500], [100,200], [300,100],[500,100], [700,200], [700,500]], np.int32)
 
@@ -178,6 +178,7 @@ while(True):
     
     new_screen1, original_image1 = process_img_2(image1)
     
+    
 
     image2 = np.array(ImageGrab.grab(bbox=(200,300,300,350)))
     mark = np.copy(image2) # image 복사
@@ -194,6 +195,7 @@ while(True):
     image2_color = image_avg_color(new_screen2)
     image3_color = image_avg_color(new_screen3)
     
+    print(image1_color, " : ", image2_color, " : ", image3_color)
     
     cv2.imshow('main', new_screen)
     #cv2.imshow('screen1', new_screen1)
