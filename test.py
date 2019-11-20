@@ -2,7 +2,7 @@ from PIL import ImageGrab
 import cv2
 import time
 import sys, os
-w
+
 import numpy as np
 from numpy import ones, vstack
 from numpy.linalg import lstsq
@@ -186,19 +186,38 @@ def process_img(image):
 while(True):
     # (0,40)부터 (800,600)좌표까지 창을 만들어서 데이터를 저장하고 screen 변수에 저장합니다
     #screen = np.array(ImageGrab.grab(bbox=(0,40,800,600)))
-    screen = np.array(ImageGrab.grab(bbox=(275,150,525,325)))
+    num = 0
+    screen = np.array(ImageGrab.grab(bbox=(250,100,450,300)))
+    screen = cv2.cvtColor(screen, cv2.COLOR_BGR2RGB)
     #print('Frame took {} seconds'.format(time.time()-last_time))
     #last_time = time.time()
+    b, g, r    = screen[:, :, 0], screen[:, :, 1], screen[:, :, 2]
+    shape = b.shape
+    shape1 = shape[0]*shape[1]
+    b = b.reshape(shape1)
+    shape = r.shape
+    shape1 = shape[0]*shape[1]
+    r = r.reshape(shape1)
+    shape = g.shape
+    shape1 = shape[0]*shape[1]
+    g = g.reshape(shape1)
     
-    new_screen1, original_image1 = process_img(screen)
+    for i in range(0,100):
+        if(b[i] > 180 & g[i] < 40 & r[i] < 40):
+            num += 1
+    print(num)
+    if num >= 40:
+        
+        print("빨간불 입니다.")
     # 이미지에 윤곽선만 추출해서 new_screen 변수에 대입합니다
     #new_screen1, original_image1 = process_img(screen1)
     #new_screen2, original_image2 = process_img(screen2)
     # pygta5-6이라는 이름의 창을 생성하고 이 창에 screen 이미지를 뿌려줍니다
-    cv2.imshow('pygta5-6', new_screen1)
-    cv2.imshow('pygta5-6-1', cv2.cvtColor(original_image1, cv2.COLOR_BGR2RGB))
-    #cv2.imshow('pygta5-6-2', cv2.cvtColor(original_image2, cv2.COLOR_BGR2RGB))
 
+    
+    #cv2.imshow('pygta5-6-1', cv2.cvtColor(original_image1, cv2.COLOR_BGR2RGB))
+    #cv2.imshow('pygta5-6-2', cv2.cvtColor(original_image2, cv2.COLOR_BGR2RGB))
+    cv2.imshow('traffic_light',screen)
     # 'q'키를 누르면 종료합니다
     if cv2.waitKey(25) & 0xFF == ord('q'):
         cv2.destroyAllWindows()
